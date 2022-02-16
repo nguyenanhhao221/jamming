@@ -15,24 +15,56 @@ export class App extends React.Component {
                 {
                     name: 'Castle on the hill',
                     artist: 'Ed Sheeran',
-                    id: '001',
+                    id: 1,
                     album: '+'
                 },
                 {
                     name: 'Castle on the hill',
                     artist: 'Sheeran',
-                    id: '002',
+                    id: 2,
                     album: '+'
                 },
                 {
                     name: 'Castle on the hill',
                     artist: 'Justin Sheeran',
-                    id: '003',
+                    id: 3,
                     album: '-'
                 },
+            ],
+            playlistName: 'play list name',
+            playlistTracks: [
+                {
+                    name: 'playlistName1',
+                    artist: 'playlistArtist1',
+                    id: 4,
+                    album: 'playlistAlbum1'
+                },
+                {
+                    name: 'playlistName2',
+                    artist: 'playlistArtist2',
+                    id: 5,
+                    album: 'playlistAlbum2'
+                },
+                {
+                    name: 'playlistName3',
+                    artist: 'playlistArtist3',
+                    id: 6,
+                    album: 'playlistAlbum3'
+                }
             ]
         };
     }
+    // addTrack method
+    // adds a song to the playlist state. The application passes the method through a series of components to Track. The user can trigger the .addTrack() method by clicking the + sign from the search results list.
+    // Use the track’s id property to check if the current song is in the playlistTracks state.
+    // If the id is new, add the song to the end of the playlist.
+    // Set the new state of the playlist
+    addTrack(track) {
+        if(!(this.state.playlistTracks.map(playlistTrack => playlistTrack.id).includes(track.id))) {
+            this.setState({playlistTracks: track})
+        }
+    }
+    
     render() {
         return (
             <div>
@@ -45,7 +77,9 @@ export class App extends React.Component {
                         {/* Pass the searchResults state of App into SearchResults component with prop name "searchResults" */}
                         <SearchResults searchResults={this.state.searchResults} />
                         {/* <!-- Add a Playlist component --> */}
-                        <Playlist />
+                        <Playlist
+                            playlistName={this.state.playlistName}
+                            playlistTracks={this.state.playlistTracks} />
                     </div>
                 </div>
             </div>

@@ -15,7 +15,8 @@ export class TrackList extends React.Component {
                         return <Track
                                 track={track}
                                 // save track.id to attribute key and pass to Track
-                                key={track.id}/>
+                                key={track.id} 
+                                />
                     })
                 }
             </div>
