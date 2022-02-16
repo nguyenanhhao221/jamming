@@ -59,6 +59,8 @@ export class App extends React.Component {
         this.addTrack = this.addTrack.bind(this);
         this.removeTrack = this.removeTrack.bind(this);
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
+        this.savePLaylist = this.savePLaylist.bind(this);
+        this.search = this.search.bind(this);
     }
     // addTrack method
     // adds a song to the playlist state. The application passes the method through a series of components to Track. The user can trigger the .addTrack() method by clicking the + sign from the search results list.
@@ -91,13 +93,30 @@ export class App extends React.Component {
         this.setState({playlistName: name});
     }
 
+
+    //savePlaylist method
+    //Create an array of "uri" which will be contained in the playlistTrack
+    //Using this "uri" to refer to the track in Spotify's library
+    savePLaylist() {
+        let trackURIs = this.state.playlistTracks.map(track => track.uri);
+        return trackURIs;
+    }
+    //search method
+    //accept the search's value entered by user and later will be send to Spotify API
+    search(searchTerm) {
+        console.log(searchTerm);
+    }
     render() {
         return (
             <div>
                 <h1>Ja<span className="highlight">mmm</span>ing</h1>
                 <div className="App">
                     {/* <!-- Add a SearchBar component --> */}
-                    <SearchBar />
+                    
+                    <SearchBar 
+                        //Pass attribute onSearch with the search method
+                        onSearch={this.search} />
+                        
                     <div className="App-playlist">
                         {/* <!-- Add a SearchResults component --> */}
                         {/* Pass the searchResults state of App into SearchResults component with prop name "searchResults" */}
@@ -111,7 +130,10 @@ export class App extends React.Component {
                             // Pass onRemove with removeTrack method
                             onRemove={this.removeTrack}
                             // Pass attribute onNameChange with the updatePlaylistName method
-                            onNameChange={this.updatePlaylistName}/>
+                            onNameChange={this.updatePlaylistName}
+                            //Pass attribute onSave with the savePlaylist method
+                            onSave={this.savePLaylist}
+                            />
                     </div>
                 </div>
             </div>

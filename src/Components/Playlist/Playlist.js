@@ -32,7 +32,10 @@ export class Playlist extends React.Component {
                     isRemoval={true}
                     //pass onRemove with props onRemove so later can be used in Track component
                     onRemove={this.props.onRemove}/>
-                <button className="Playlist-save">SAVE TO SPOTIFY</button>
+                <button 
+                    className="Playlist-save"
+                    //When user click on this button, run onSave props which refer to savePlaylist method in App.js
+                    onClick={this.props.onSave}>SAVE TO SPOTIFY</button>
             </div>);
     }
 };
