@@ -16,6 +16,8 @@ export class TrackList extends React.Component {
                                 track={track}
                                 // save track.id to attribute key and pass to Track
                                 key={track.id} 
+                                //Pass onAdd attribute with value of onAdd from TrackList to Track component
+                                onAdd={this.props.onAdd}
                                 />
                     })
                 }

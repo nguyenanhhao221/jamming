@@ -11,7 +11,10 @@ export class SearchResults extends React.Component {
                 {/* Pass into TrackList component a props name tracks with the value of props searchResults from SearchResults component (that were passed in App component) */}
                 {/* We will use .map to render each object in result array in TrackList component */}
                 <TrackList 
-                    tracks={this.props.searchResults}  
+                    tracks={this.props.searchResults}
+                    //Pass onAdd attribute with value of onAdd from SearchResult to TrackList
+                    onAdd={this.props.onAdd}
+                    isRemoval={false}
                 />
             </div>);
     }
