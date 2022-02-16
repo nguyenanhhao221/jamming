@@ -7,9 +7,10 @@ export class Track extends React.Component {
             <div className="Track">
                 <div className="Track-information">
                     {/* <!-- track name will go here --> */}
-                    <h3>Track name will go here</h3>
-                    {/* <!-- track artist will go here--> | <!-- track album will go here --> */}
-                    <p></p>
+                    {/* Access track name */}
+                    <h3>{this.props.track.name}</h3>
+                    {/* <!-- track artist will go here-->  <!-- track album will go here --> */}
+                    <p>{this.props.track.artist}|{this.props.track.album}</p>
                 </div>
                 {/* <!-- + or - will go here --> */}
                 <button className="Track-action"></button>
