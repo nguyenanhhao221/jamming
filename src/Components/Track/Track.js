@@ -4,13 +4,18 @@ import './Track.css'
 export class Track extends React.Component {
     constructor(props) {
         super(props);
-        this.addTrack = this.addTrack.bind(this); 
+        this.addTrack = this.addTrack.bind(this);
+        this.removeTrack = this.removeTrack.bind(this); 
     }
     //Use renderAction method to determine the "+" or "-" button
     //Will also render the event handler here whenever user click on button
     renderAction() {
         if (this.props.isRemoval) {
-            return <button className="Track-action">-</button>
+            return <button 
+                        className="Track-action"
+                        // add event listener onClick
+                        // When user click, run the removeTrack method of Track component
+                        onClick={this.removeTrack}>-</button>
         } else {
             return <button 
                         className="Track-action"
@@ -19,12 +24,15 @@ export class Track extends React.Component {
                         onClick={this.addTrack}>+</button>
         }
     }
-    //addTrack is event handler for whenever the user click on the button
+    //addTrack is event handler for whenever the user click on the + button
     //this.props.onAdd is refer to the addTrack method from App.js
     addTrack() {
         this.props.onAdd(this.props.track);
     }
-    
+   //removeTrack is event handler for whenever the user click on the - button
+   removeTrack() {
+       this.props.onRemove(this.props.track);
+   }
     render() {
         return (
             <div className="Track">

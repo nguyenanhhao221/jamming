@@ -9,7 +9,12 @@ export class Playlist extends React.Component {
                 <input defaultValue="New Playlist" />
                 {/* <!-- Add a TrackList component --> */}
                 {/*  */}
-                <TrackList tracks={this.props.playlistTracks}/>
+                <TrackList 
+                    tracks={this.props.playlistTracks}
+                    // Set isRemoval to true so that in Track component, we can render the "-" button
+                    isRemoval={true}
+                    //pass onRemove with props onRemove so later can be used in Track component
+                    onRemove={this.props.onRemove}/>
                 <button className="Playlist-save">SAVE TO SPOTIFY</button>
             </div>);
     }

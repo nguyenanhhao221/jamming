@@ -55,6 +55,7 @@ export class App extends React.Component {
         };
         //bind addTrack method to make sure this.setState used in addTrack refer to correct instance
         this.addTrack = this.addTrack.bind(this);
+        this.removeTrack = this.removeTrack.bind(this);
     }
     // addTrack method
     // adds a song to the playlist state. The application passes the method through a series of components to Track. The user can trigger the .addTrack() method by clicking the + sign from the search results list.
@@ -77,6 +78,11 @@ export class App extends React.Component {
         //remember to bind addTrack because we use this.setState.Need to bind to make sure "this" refer to correct instance
     }
 
+    removeTrack(track) {
+        let newTracksList = this.state.playlistTracks.filter(eachTrack => eachTrack.id !== track.id);
+        this.setState({playlistTracks: newTracksList})
+    }
+
     render() {
         return (
             <div>
@@ -93,7 +99,9 @@ export class App extends React.Component {
                         {/* <!-- Add a Playlist component --> */}
                         <Playlist
                             playlistName={this.state.playlistName}
-                            playlistTracks={this.state.playlistTracks} />
+                            playlistTracks={this.state.playlistTracks} 
+                            // Pass onRemove with removeTrack method
+                            onRemove={this.removeTrack}/>
                     </div>
                 </div>
             </div>

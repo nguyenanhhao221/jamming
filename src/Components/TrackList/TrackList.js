@@ -18,6 +18,10 @@ export class TrackList extends React.Component {
                                 key={track.id} 
                                 //Pass onAdd attribute with value of onAdd from TrackList to Track component
                                 onAdd={this.props.onAdd}
+                                //pass Removal so can use in Track to decide + or - button
+                                isRemoval={this.props.isRemoval}
+                                //pass onRemove with props onRemove so later can be used in Track component
+                                onRemove={this.props.onRemove}
                                 />
                     })
                 }
