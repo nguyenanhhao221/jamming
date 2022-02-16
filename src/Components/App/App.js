@@ -62,22 +62,19 @@ export class App extends React.Component {
     // If the id is new, add the song to the end of the playlist.
     // Set the new state of the playlist
     addTrack(track) {
-        // if(!(this.state.playlistTracks.map(playlistTrack => playlistTrack.id).includes(track.id))) {
-        //     //remember to bind addTrack because we use this.setState
-        //     //Need to bind to make sure "this" refer to correct instance
-        //     this.setState({playlistTracks: track})
-        // }
-        // const tracks = this.state.playlistTracks;
         let tempPlaylistTracks = this.state.playlistTracks;
-        // if (tempPlaylistTracks.find(savedTrack => savedTrack.id === track.id)) {
-        //     return;
-        // }
-        if(tempPlaylistTracks.map(eachTrack => eachTrack.id).includes(track.id)) {
+        if (tempPlaylistTracks.map(eachTrack => eachTrack.id).includes(track.id)) {
             return;
         }
-        
+        // Can also use .find method to check if id already exist
+        /*
+        if (tempPlaylistTracks.find(savedTrack => savedTrack.id === track.id)) {
+            return;
+        }
+        */
         tempPlaylistTracks.push(track); //use push here because the playListTracks is an ARRAY contain several objects. This way when we setState, it will merge 2 array contain object together
-        this.setState({playlistTracks: tempPlaylistTracks})
+        this.setState({ playlistTracks: tempPlaylistTracks })
+        //remember to bind addTrack because we use this.setState.Need to bind to make sure "this" refer to correct instance
     }
 
     render() {
