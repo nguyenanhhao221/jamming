@@ -14,7 +14,7 @@ export class TrackList extends React.Component {
                     this.props.tracks.map(track => {
                         return <Track
                                 track={track}
-                                // save id to attribute key and pass to Track
+                                // save track.id to attribute key and pass to Track
                                 key={track.id}/>
                     })
                 }
