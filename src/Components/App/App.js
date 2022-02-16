@@ -31,7 +31,9 @@ export class App extends React.Component {
                     album: '-'
                 },
             ],
+
             playlistName: 'play list name',
+
             playlistTracks: [
                 {
                     name: 'playlistName1',
@@ -56,6 +58,7 @@ export class App extends React.Component {
         //bind addTrack method to make sure this.setState used in addTrack refer to correct instance
         this.addTrack = this.addTrack.bind(this);
         this.removeTrack = this.removeTrack.bind(this);
+        this.updatePlaylistName = this.updatePlaylistName.bind(this);
     }
     // addTrack method
     // adds a song to the playlist state. The application passes the method through a series of components to Track. The user can trigger the .addTrack() method by clicking the + sign from the search results list.
@@ -77,10 +80,15 @@ export class App extends React.Component {
         this.setState({ playlistTracks: tempPlaylistTracks })
         //remember to bind addTrack because we use this.setState.Need to bind to make sure "this" refer to correct instance
     }
-
+    // removeTrack method which allow user to remove a song in the Playlist by click the "-" button
     removeTrack(track) {
         let newTracksList = this.state.playlistTracks.filter(eachTrack => eachTrack.id !== track.id);
         this.setState({playlistTracks: newTracksList})
+    }
+
+    //updatePlaylistName method which allow user to change the name of the current Playlist and we update its name to the current state
+    updatePlaylistName(name) {
+        this.setState({playlistName: name});
     }
 
     render() {
@@ -101,7 +109,9 @@ export class App extends React.Component {
                             playlistName={this.state.playlistName}
                             playlistTracks={this.state.playlistTracks} 
                             // Pass onRemove with removeTrack method
-                            onRemove={this.removeTrack}/>
+                            onRemove={this.removeTrack}
+                            // Pass attribute onNameChange with the updatePlaylistName method
+                            onNameChange={this.updatePlaylistName}/>
                     </div>
                 </div>
             </div>
