@@ -9,7 +9,6 @@ const generateRandomString = function (length) {
     return text;
 };
 //Access token for Spotify which will be returned by Spotify after the user put in Spotify account correctly
-let accessToken;
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 const accessInfo= {
     client_id: 'bb4fd4f43c4f4708842f10c07c853722', // Your client id
@@ -21,23 +20,25 @@ const accessInfo= {
 const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 
 const Spotify = {
+    accessToken: '',
     //Get the access token when we start to login in
     //If it's the first time 
     getAccessToken() {
         //Check if the access_token is already have value. If yes, keep the value of it
-        if (accessToken) {
-            return accessToken;
+        if (this.accessToken) {
+            return this.accessToken;
         }
         //Check if the access_token is already in the URL (just logged in successfully)
         //Spotify will give the access token in the URL after the "code" so need to check if the URL match and code have value or not
         //Save this value to this.access_token
         const accessTokenMatch = window.location.href.match(/code=([^&]*)/);
         if (accessTokenMatch) {
-            return accessToken = accessTokenMatch[1];
+            return this.accessToken = accessTokenMatch[1];
         }
         //If the access token is not set AND the URL is not contain any access token, need to ask the user to login by directing to spotify login 
         else {
             const authorizeEndpoint = `${authorizeAPI}${new URLSearchParams(accessInfo)}`;
+            // @ts-ignore
             return window.location = authorizeEndpoint;
         }
     }
