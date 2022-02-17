@@ -7,7 +7,10 @@ export class SearchBar extends React.Component {
         super(props);
         //set initial state is term with empty value
         //we will store and setState for term here as the user input in the search bar
-        this.state = {term: ""};
+        this.state = {
+            term: "",
+            token: Spotify.access_token
+        };
 
         this.handleTermChange = this.handleTermChange.bind(this);
         this.search = this.search.bind(this);
@@ -24,23 +27,21 @@ export class SearchBar extends React.Component {
     //Set the state of this SearchBar's term to the current value of the event target (input)
 
     handleTermChange(e) {
-        this.setState({term: e.target.value})
+        this.setState({ term: e.target.value })
     }
-
     handleLogin() {
-        return window.location.href =  Spotify.getAuthorizeEndpoint()
+        Spotify.getAccessToken()
     }
-    
     render() {
         return (
             <div className="SearchBar">
-                <input 
-                    placeholder="Enter A Song, Album, or Artist" 
-                    onChange={this.handleTermChange}/>
-                <button 
+                <input
+                    placeholder="Enter A Song, Album, or Artist"
+                    onChange={this.handleTermChange} />
+                <button
                     className="SearchButton"
                     onClick={this.handleLogin}
-                    >SEARCH</button>
+                >SEARCH</button>
             </div>
         )
     };
