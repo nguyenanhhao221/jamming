@@ -74,8 +74,7 @@ const Spotify = {
         try {
             const response = await fetch(apiEndpoint, options);
             if (response.ok) {
-                const jsonResponse = response.json();
-                console.log(jsonResponse);
+                const jsonResponse = await response.json();
                 return jsonResponse;
             }
             throw new Error('Request failed')
