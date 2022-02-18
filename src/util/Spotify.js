@@ -23,7 +23,8 @@ const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 const Spotify = {
     authorizationCode: '',// which will later be exchanged for accessToken
     accessToken: '', //required for making request to retrieve data from Spotify
-    //Get the access token when we start to login in
+    
+    //Get the authorization code when we start to login in
     getAuthorizationCode() {
         //Check if the access_token is already have value. If yes, keep the value of it
         if (this.authorizationCode) {
@@ -44,26 +45,31 @@ const Spotify = {
         }
     },
 
+    //getAccessToken method. Send request to Spotify API with the authorization code from getAuthorizationCode() and get access Token
     getAccessToken() {
         const apiToken = 'https://accounts.spotify.com/api/token';
+        //Data which will be sent together with the request
         const data = {
             grant_type: "authorization_code",
             code: this.authorizationCode,
             redirect_uri: accessInfo.redirect_uri
         }
-        const apiEndPoint = apiToken;
+        //btoa use to encoded with base64 
         const base64EncodedStr = btoa(accessInfo.client_id + ":" + client_secret)
         const options = {
             headers: {
                 'Authorization': `Basic ${base64EncodedStr}`,
+                //Spotify required Content-type so the body below need to be using with URLSearchParams
                 'Content-type': 'application/x-www-form-urlencoded'
             },
             method: 'POST',
+            //Need to use URLSearchParams to convert data to correct format
             body: new URLSearchParams(data)
         }
-        return this.fetchAPI(apiEndPoint, options)
+        return this.fetchAPI(apiToken, options)
     },
 
+    //fetchAPI method
     async fetchAPI(apiEndpoint, options) {
         try {
             const response = await fetch(apiEndpoint, options);
