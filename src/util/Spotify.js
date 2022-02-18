@@ -8,7 +8,7 @@ const generateRandomString = function (length) {
     }
     return text;
 };
-//Access token for Spotify which will be returned by Spotify after the user put in Spotify account correctly
+
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 const accessInfo = {
     client_id: 'bb4fd4f43c4f4708842f10c07c853722', // Your client id
@@ -23,7 +23,7 @@ const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 const Spotify = {
     authorizationCode: '',// which will later be exchanged for accessToken
     accessToken: '', //required for making request to retrieve data from Spotify
-    
+    refreshToken: '', //required when the authorization code expires
     //Get the authorization code when we start to login in
     getAuthorizationCode() {
         //Check if the access_token is already have value. If yes, keep the value of it
@@ -35,7 +35,7 @@ const Spotify = {
         //Save this value to authorizationCode
         let authorizationCodeMatch = null;
         const queryString = window.location.search; //search will return the string after "?" in url
-        if(queryString.length > 0) {
+        if (queryString.length > 0) {
             const urlParams = new URLSearchParams(queryString);
             authorizationCodeMatch = urlParams.get('code')
             window.history.pushState("", "", accessInfo.redirect_uri) // remove params from url
@@ -70,9 +70,37 @@ const Spotify = {
             //Need to use URLSearchParams to convert data to correct format
             body: new URLSearchParams(data)
         }
-        return this.fetchAPI(apiToken, options)
-    },
 
+        if (this.accessToken) {
+            return this.accessToken;
+        } else {
+            //save access_token acquire from API to Spotify object. accessToken
+            this.fetchAPI(apiToken, options)
+                .then(jsonResponse => {
+                    //if status of response is 401
+                    //The accessToken might expire because it only last 3600s (1h)
+                    //So need to send request for new accessToken with refreshToken
+                    if (jsonResponse.status === 401) {
+                       this.refreshAccessToken(apiToken, data, options)
+                    }
+                    
+                    this.accessToken = jsonResponse.access_token;
+                    //also quire the refreshToken from this API call
+                    this.refreshToken = jsonResponse.refresh_token;
+                });
+            return;
+        }
+    },
+    //This method will access the data send in the request and update key/value to meet Spotify requirement for resend access token with refresh token
+    refreshAccessToken(apiToken, newData,options) {
+        newData.grant_type = "refresh_token";
+        newData.refresh_token = this.refreshToken;
+        delete newData.code;
+        return this.fetchAPI(apiToken, options).then(jsonResponse => {
+            this.accessToken = jsonResponse.access_token;
+            this.refreshToken = jsonResponse.refresh_token;
+        })
+    },
     //fetchAPI method
     async fetchAPI(apiEndpoint, options) {
         try {
@@ -85,7 +113,10 @@ const Spotify = {
         } catch (error) {
             console.log(error)
         }
+    },
 
+    getTracks() {
+        
     },
 
     // returns a promise that will eventually resolve to the list of tracks from the search.
