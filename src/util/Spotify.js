@@ -32,10 +32,14 @@ const Spotify = {
         }
         //Check if the access_token is already in the URL (just logged in successfully)
         //Spotify will give the access token in the URL after the "code" so need to check if the URL match and code have value or not
-        //Save this value to this.access_token
-        const authorizationCodeMatch = window.location.href.match(/code=([^&]*)/);
-        if (authorizationCodeMatch) {
-            return this.authorizationCode = authorizationCodeMatch[1];
+        //Save this value to authorizationCode
+        let authorizationCodeMatch = null;
+        const queryString = window.location.search; //search will return the string after "?" in url
+        if(queryString.length > 0) {
+            const urlParams = new URLSearchParams(queryString);
+            authorizationCodeMatch = urlParams.get('code')
+            window.history.pushState("", "", accessInfo.redirect_uri) // remove params from url
+            return this.authorizationCode = authorizationCodeMatch;
         }
         //If the access token is not set AND the URL is not contain any access token, need to ask the user to login by directing to spotify login 
         else {
