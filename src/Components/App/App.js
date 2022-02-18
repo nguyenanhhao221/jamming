@@ -106,7 +106,7 @@ export class App extends React.Component {
     //search method
     //accept the search's value entered by user and later will be send to Spotify API
     search(searchTerm) {
-        console.log(searchTerm);
+        Spotify.search(searchTerm)
     }
     render() {
         return (

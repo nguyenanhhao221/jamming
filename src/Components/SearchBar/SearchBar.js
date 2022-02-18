@@ -14,7 +14,7 @@ export class SearchBar extends React.Component {
 
         this.handleTermChange = this.handleTermChange.bind(this);
         this.search = this.search.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
+        // this.handleSearch = this.handleSearch.bind(this);
     }
     //search method 
     //call the search method of App component and pass in the value of this SearchBar's state.term
@@ -30,12 +30,12 @@ export class SearchBar extends React.Component {
     handleTermChange(e) {
         this.setState({ term: e.target.value })
     }
-    //handleLogin method. Run the getAccessToken method in Spotify. This method will check if the user is logged in or not, and if they do it will save the access token to Spotify.accessToken
-    //Then handleLogin will setState to save that accessToken to SearchBar's state
-    handleLogin() {
-        Spotify.getAccessToken();
-        this.setState({ token: Spotify.accessToken })
-    }
+    //handleSearch method. Run the getAccessToken method in Spotify. This method will check if the user is logged in or not, and if they do it will save the access token to Spotify.accessToken
+    //Then handleSearch will setState to save that accessToken to SearchBar's state
+    // handleSearch() {
+    //     Spotify.getAccessToken();
+    //     this.setState({ token: Spotify.accessToken })
+    // }
     render() {
         return (
             <div className="SearchBar">
@@ -44,7 +44,7 @@ export class SearchBar extends React.Component {
                     onChange={this.handleTermChange} />
                 <button
                     className="SearchButton"
-                    onClick={this.handleLogin}
+                    onClick={this.search}
                 >SEARCH</button>
             </div>
         )
