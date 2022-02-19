@@ -9,12 +9,10 @@ export class SearchBar extends React.Component {
         //we will store and setState for term here as the user input in the search bar
         this.state = {
             term: "",
-            token: Spotify.access_token
         };
 
         this.handleTermChange = this.handleTermChange.bind(this);
         this.search = this.search.bind(this);
-        // this.handleSearch = this.handleSearch.bind(this);
     }
     //search method 
     //call the search method of App component and pass in the value of this SearchBar's state.term
@@ -30,12 +28,7 @@ export class SearchBar extends React.Component {
     handleTermChange(e) {
         this.setState({ term: e.target.value })
     }
-    //handleSearch method. Run the getAccessToken method in Spotify. This method will check if the user is logged in or not, and if they do it will save the access token to Spotify.accessToken
-    //Then handleSearch will setState to save that accessToken to SearchBar's state
-    // handleSearch() {
-    //     Spotify.getAccessToken();
-    //     this.setState({ token: Spotify.accessToken })
-    // }
+  
     render() {
         return (
             <div className="SearchBar">

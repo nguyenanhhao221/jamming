@@ -27,7 +27,7 @@ const Spotify = {
     //Get the authorization code when we start to login in
     getAuthorizationCode() {
         //Check if the access_token is already have value. If yes, keep the value of it
-        if (this.authorizationCode) {
+        if (this.authorizationCode || this.accessToken) {
             return this.authorizationCode;
         }
         //Check if the access_token is already in the URL (just logged in successfully)
@@ -81,9 +81,9 @@ const Spotify = {
                     //The accessToken might expire because it only last 3600s (1h)
                     //So need to send request for new accessToken with refreshToken
                     if (jsonResponse.status === 401) {
-                       this.refreshAccessToken(apiToken, data, options)
+                        this.refreshAccessToken(apiToken, data, options)
                     }
-                    
+
                     this.accessToken = jsonResponse.access_token;
                     //also quire the refreshToken from this API call
                     this.refreshToken = jsonResponse.refresh_token;
@@ -92,7 +92,7 @@ const Spotify = {
         }
     },
     //This method will access the data send in the request and update key/value to meet Spotify requirement for resend access token with refresh token
-    refreshAccessToken(apiToken, newData,options) {
+    refreshAccessToken(apiToken, newData, options) {
         newData.grant_type = "refresh_token";
         newData.refresh_token = this.refreshToken;
         delete newData.code;
@@ -115,14 +115,32 @@ const Spotify = {
         }
     },
 
-    getTracks() {
-        
+    getTracks(term) {
+        const apiToFetch = 'https://api.spotify.com/v1/search?'
+        const query = {
+            q: term,
+            type: 'track'
+        }
+
+        const apiEndpoint = apiToFetch + new URLSearchParams(query);
+
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`,
+            },
+            method: 'GET',
+        }
+        this.fetchAPI(apiEndpoint, options).then(jsonResponse => console.log(jsonResponse))
+
     },
 
     // returns a promise that will eventually resolve to the list of tracks from the search.
     search(term) {
         this.getAuthorizationCode();
         this.getAccessToken();
+        this.getTracks(term);
+        
     }
 };
 
