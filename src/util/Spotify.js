@@ -114,8 +114,8 @@ const Spotify = {
             console.log(error)
         }
     },
-
-    getTracks(term) {
+    // getTracks from Spotify using API
+    async getTracks(term) {
         const apiToFetch = 'https://api.spotify.com/v1/search?'
         const query = {
             q: term,
@@ -131,16 +131,15 @@ const Spotify = {
             },
             method: 'GET',
         }
-        this.fetchAPI(apiEndpoint, options).then(jsonResponse => console.log(jsonResponse))
-
+        const tracks =  await this.fetchAPI(apiEndpoint, options);
+        return tracks;
     },
 
     // returns a promise that will eventually resolve to the list of tracks from the search.
     search(term) {
         this.getAuthorizationCode();
         this.getAccessToken();
-        this.getTracks(term);
-        
+        return this.getTracks(term);
     }
 };
 

@@ -13,28 +13,8 @@ export class App extends React.Component {
         //We use hard code at first.
         //Later this will be update with API from Spotify
         this.state = {
-            searchResults: [
-                {
-                    name: 'Castle on the hill',
-                    artist: 'Ed Sheeran',
-                    id: 1,
-                    album: '+'
-                },
-                {
-                    name: 'Castle on the hill',
-                    artist: 'Sheeran',
-                    id: 2,
-                    album: '+'
-                },
-                {
-                    name: 'Castle on the hill',
-                    artist: 'Justin Sheeran',
-                    id: 3,
-                    album: '-'
-                },
-            ],
-
-            playlistName: 'play list name',
+            searchResults: [],
+            playlistName: 'Play List Name',
 
             playlistTracks: [
                 {
@@ -87,12 +67,12 @@ export class App extends React.Component {
     // removeTrack method which allow user to remove a song in the Playlist by click the "-" button
     removeTrack(track) {
         let newTracksList = this.state.playlistTracks.filter(eachTrack => eachTrack.id !== track.id);
-        this.setState({playlistTracks: newTracksList})
+        this.setState({ playlistTracks: newTracksList })
     }
 
     //updatePlaylistName method which allow user to change the name of the current Playlist and we update its name to the current state
     updatePlaylistName(name) {
-        this.setState({playlistName: name});
+        this.setState({ playlistName: name });
     }
 
 
@@ -105,8 +85,22 @@ export class App extends React.Component {
     }
     //search method
     //accept the search's value entered by user and later will be send to Spotify API
-    search(searchTerm) {
-        Spotify.search(searchTerm)
+    //We use async here because the Spotify.search will return a Promise. So we await that Promise to resolved value.
+    async search(searchTerm) {
+        let tracks = await Spotify.search(searchTerm);
+        //Create new empty array to store each track obj and later be set to update the state of searchResult.
+        let newSearchResult = [];
+        //Go through each track in the returned object from API and save to newSearchResult as new array
+        tracks.tracks.items.map(track => {
+            let newTrackObj = {};
+            newTrackObj.name = track.name;
+            newTrackObj.artist = track.artists[0].name;
+            newTrackObj.id = track.id;
+            newTrackObj.album = track.album.name;
+            newSearchResult.push(newTrackObj);
+            return newSearchResult;
+        });
+        this.setState({searchResults : newSearchResult})
     }
     render() {
         return (
@@ -114,11 +108,11 @@ export class App extends React.Component {
                 <h1>Ja<span className="highlight">mmm</span>ing</h1>
                 <div className="App">
                     {/* <!-- Add a SearchBar component --> */}
-                    
-                    <SearchBar 
+
+                    <SearchBar
                         //Pass attribute onSearch with the search method
                         onSearch={this.search} />
-                        
+
                     <div className="App-playlist">
                         {/* <!-- Add a SearchResults component --> */}
                         {/* Pass the searchResults state of App into SearchResults component with prop name "searchResults" */}
@@ -128,14 +122,14 @@ export class App extends React.Component {
                         {/* <!-- Add a Playlist component --> */}
                         <Playlist
                             playlistName={this.state.playlistName}
-                            playlistTracks={this.state.playlistTracks} 
+                            playlistTracks={this.state.playlistTracks}
                             // Pass onRemove with removeTrack method
                             onRemove={this.removeTrack}
                             // Pass attribute onNameChange with the updatePlaylistName method
                             onNameChange={this.updatePlaylistName}
                             //Pass attribute onSave with the savePlaylist method
                             onSave={this.savePLaylist}
-                            />
+                        />
                     </div>
                 </div>
             </div>
