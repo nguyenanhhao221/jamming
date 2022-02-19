@@ -84,11 +84,11 @@ const Spotify = {
                     this.refreshAccessToken(apiToken, data, options)
                 }
 
-                    this.accessToken = jsonResponse.access_token;
-                    //also quire the refreshToken from this API call
-                    this.refreshToken = jsonResponse.refresh_token;
-                });
-            return;
+                this.accessToken = jsonResponse.access_token;
+                //also quire the refreshToken from this API call
+                this.refreshToken = jsonResponse.refresh_token;
+            });
+        return;
         }
     },
     //This method will access the data send in the request and update key/value to meet Spotify requirement for resend access token with refresh token
