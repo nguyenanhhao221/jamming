@@ -73,16 +73,16 @@ const Spotify = {
 
         if (this.accessToken) {
             return this.accessToken;
-        } else {
-            //save access_token acquire from API to Spotify object. accessToken
-            this.fetchAPI(apiToken, options)
-                .then(jsonResponse => {
-                    //if status of response is 401
-                    //The accessToken might expire because it only last 3600s (1h)
-                    //So need to send request for new accessToken with refreshToken
-                    if (jsonResponse.status === 401) {
-                        this.refreshAccessToken(apiToken, data, options)
-                    }
+        }
+        //save access_token acquire from API to Spotify object. accessToken
+        this.fetchAPI(apiToken, options)
+            .then(jsonResponse => {
+                //if status of response is 401
+                //The accessToken might expire because it only last 3600s (1h)
+                //So need to send request for new accessToken with refreshToken
+                if (jsonResponse.status === 401) {
+                    this.refreshAccessToken(apiToken, data, options)
+                }
 
                     this.accessToken = jsonResponse.access_token;
                     //also quire the refreshToken from this API call
