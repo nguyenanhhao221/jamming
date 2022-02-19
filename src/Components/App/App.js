@@ -97,6 +97,7 @@ export class App extends React.Component {
             newTrackObj.artist = track.artists[0].name;
             newTrackObj.id = track.id;
             newTrackObj.album = track.album.name;
+            newTrackObj.uri = track.uri
             newSearchResult.push(newTrackObj);
             return newSearchResult;
         });
