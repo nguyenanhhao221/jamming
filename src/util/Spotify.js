@@ -16,7 +16,7 @@ const accessInfo = {
     redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
     response_type: 'code',
     //Which scope info that we need to see in user Spotify data
-    scope: 'playlist-modify-private user-read-private user-read-email'
+    scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
 };
 const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 
