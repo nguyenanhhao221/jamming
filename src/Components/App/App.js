@@ -21,7 +21,7 @@ export class App extends React.Component {
         this.addTrack = this.addTrack.bind(this);
         this.removeTrack = this.removeTrack.bind(this);
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
-        this.savePLaylist = this.savePLaylist.bind(this);
+        this.savePlaylist = this.savePlaylist.bind(this);
         this.search = this.search.bind(this);
     }
     // addTrack method
@@ -59,9 +59,22 @@ export class App extends React.Component {
     //savePlaylist method
     //Create an array of "uri" which will be contained in the playlistTrack
     //Using this "uri" to refer to the track in Spotify's library
-    savePLaylist() {
-        let trackURIs = this.state.playlistTracks.map(track => track.uri);
-        return trackURIs;
+    savePlaylist() {
+        const playlistTrackURIs = this.state.playlistTracks.map(track => track.uri);
+        const playlistName = this.state.playlistName;
+        //if the current playlist tracks have any song
+        if (this.state.playlistTracks.length > 0) {
+            Spotify.addItemsToPlaylist(playlistName, playlistTrackURIs);
+            alert('Success');
+
+            //After save playlist successfully to Spotify. Reset to blank playlist name and playlist track
+            return this.setState({
+                playlistName: 'New Playlist',
+                playlistTracks: []
+            })
+        } else {
+            alert("No track is added in the current playlist. Cannot create Playlist on Spotify. Please add song to playlist");
+        }
     }
     //search method
     //accept the search's value entered by user and later will be send to Spotify API
@@ -77,11 +90,11 @@ export class App extends React.Component {
             newTrackObj.artist = track.artists[0].name;
             newTrackObj.id = track.id;
             newTrackObj.album = track.album.name;
-            newTrackObj.uri = track.uri
+            newTrackObj.uri = track.uri;
             newSearchResult.push(newTrackObj);
             return newSearchResult;
         });
-        this.setState({searchResults : newSearchResult})
+        this.setState({ searchResults: newSearchResult })
     }
     render() {
         return (
@@ -109,7 +122,7 @@ export class App extends React.Component {
                             // Pass attribute onNameChange with the updatePlaylistName method
                             onNameChange={this.updatePlaylistName}
                             //Pass attribute onSave with the savePlaylist method
-                            onSave={this.savePLaylist}
+                            onSave={this.savePlaylist}
                         />
                     </div>
                 </div>

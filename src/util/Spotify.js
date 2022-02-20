@@ -83,13 +83,11 @@ const Spotify = {
                 if (jsonResponse.status === 401) {
                     this.refreshAccessToken(apiToken, data, options)
                 }
-
                 this.accessToken = jsonResponse.access_token;
                 //also quire the refreshToken from this API call
                 this.refreshToken = jsonResponse.refresh_token;
             });
         return;
-        }
     },
     //This method will access the data send in the request and update key/value to meet Spotify requirement for resend access token with refresh token
     refreshAccessToken(apiToken, newData, options) {
@@ -101,6 +99,13 @@ const Spotify = {
             this.refreshToken = jsonResponse.refresh_token;
         })
     },
+    //handleLoginSpotify
+    //Will be called to check if the user is logged in yet
+    handleLoginSpotify() {
+        this.getAuthorizationCode();
+        this.getAccessToken();
+    },
+
     //fetchAPI method
     async fetchAPI(apiEndpoint, options) {
         try {
@@ -131,14 +136,76 @@ const Spotify = {
             },
             method: 'GET',
         }
-        const tracks =  await this.fetchAPI(apiEndpoint, options);
+        const tracks = await this.fetchAPI(apiEndpoint, options);
         return tracks;
+    },
+    //savePlaylistToSpotify. In order to savePlaylist to Spotify of the user we will need to
+    // 1. Get the current user's Spotify ID
+    // 2. Create an empty playlist 
+    // 3. Add items to that empty playlist
+    savePlaylistToSpotify(playlistName,playlistTracks) {
+        this.handleLoginSpotify();
+        // this.getCurrentUserProfile();
+        // return this.createEmptyPlaylist(playlistName);
+        this.addItemsToPlaylist(playlistName,playlistTracks);
+    },
+    async getCurrentUserProfile() {
+        const apiEndpoint = 'https://api.spotify.com/v1/me';
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`,
+            },
+            method: 'GET',
+        };
+        let currentUserInfo = await this.fetchAPI(apiEndpoint, options);
+        return currentUserInfo.id;
+    },
+    //createPlaylist method
+    //Create an Empty playlist and get that playlist id from Spotify API
+    //Later will add tracks to this empty playlist
+    async createEmptyPlaylist(playlistName) {
+        const userID = await this.getCurrentUserProfile();
+        const apiEndpoint = `https://api.spotify.com/v1/users/${userID}/playlists`;
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`,
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                name: playlistName,
+                description: "Playlist created by Jammming clone of Hao Nguyen",
+                public: false
+            })
+        };
+        const playlist = await this.fetchAPI(apiEndpoint, options);
+        return playlist.id;
+    },
+
+
+
+    async addItemsToPlaylist(playlistName,playlistTrackURIs) {
+        const playlistID = await this.createEmptyPlaylist(playlistName);
+        const apiEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}/tracks`;
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`,
+            },
+            method: 'POST',
+            body: JSON.stringify({
+               uris: playlistTrackURIs
+            })
+        };
+
+        const playlistCreated =  await this.fetchAPI(apiEndpoint,options);
+        return playlistCreated;
     },
 
     // returns a promise that will eventually resolve to the list of tracks from the search.
     search(term) {
-        this.getAuthorizationCode();
-        this.getAccessToken();
+        this.handleLoginSpotify();
         return this.getTracks(term);
     }
 };
