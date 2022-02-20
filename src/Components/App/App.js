@@ -14,28 +14,8 @@ export class App extends React.Component {
         //Later this will be update with API from Spotify
         this.state = {
             searchResults: [],
-            playlistName: 'Play List Name',
-
-            playlistTracks: [
-                {
-                    name: 'playlistName1',
-                    artist: 'playlistArtist1',
-                    id: 4,
-                    album: 'playlistAlbum1'
-                },
-                {
-                    name: 'playlistName2',
-                    artist: 'playlistArtist2',
-                    id: 5,
-                    album: 'playlistAlbum2'
-                },
-                {
-                    name: 'playlistName3',
-                    artist: 'playlistArtist3',
-                    id: 6,
-                    album: 'playlistAlbum3'
-                }
-            ]
+            playlistName: 'New Playlist',
+            playlistTracks: []
         };
         //bind addTrack method to make sure this.setState used in addTrack refer to correct instance
         this.addTrack = this.addTrack.bind(this);
