@@ -184,7 +184,9 @@ const Spotify = {
     },
 
 
-
+    //Add tracks from App component. Current playlist (state.playlistTracks) to the current user Spotify Account's playlist 
+    //Using playlistID of the empty playlist create with createEmptyPlaylist()
+    //Make request to Spotify API with body of the track URIs
     async addItemsToPlaylist(playlistName,playlistTrackURIs) {
         const playlistID = await this.createEmptyPlaylist(playlistName);
         const apiEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}/tracks`;
