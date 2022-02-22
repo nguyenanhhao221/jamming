@@ -13,12 +13,6 @@ app.use(cors());
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Listening for PORT: ${PORT}`));
 
-app.get('/api', (request, response) => {
-    const client_secret = process.env.CLIENT_SECRET;
-    const client_id = process.env.CLIENT_ID;
-
-    response.json({
-        client_secret: client_secret,
-        client_id: client_id
-    });
-})
+//Routes
+//When ever make call to localhost/api it will call the index.js in routes folder 
+app.use('/api', require('./routes'));
