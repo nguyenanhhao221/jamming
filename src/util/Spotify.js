@@ -11,12 +11,7 @@ const generateRandomString = function (length) {
 
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 const accessInfo = {
-    client_id: 'bb4fd4f43c4f4708842f10c07c853722', // Your client id
-    state: generateRandomString(16), // state is not required but strongly recommend.It generates a random string to be sent together to spotify and spotify will included this string in its response so we can compare to avoid fake response. This provides protection against attacks such as cross-site request forgery
     redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
-    response_type: 'code',
-    //Which scope info that we need to see in user Spotify data
-    scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
 };
 const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 
@@ -34,16 +29,35 @@ const Spotify = {
         //Spotify will give the access token in the URL after the "code" so need to check if the URL match and code have value or not
         //Save this value to authorizationCode
         let authorizationCodeMatch = null;
+        let stateMatch = null;
         const queryString = window.location.search; //search will return the string after "?" in url
         if (queryString.length > 0) {
             const urlParams = new URLSearchParams(queryString);
-            authorizationCodeMatch = urlParams.get('code')
-            window.history.pushState("", "", accessInfo.redirect_uri) // remove params from url
-            return this.authorizationCode = authorizationCodeMatch;
+            authorizationCodeMatch = urlParams.get('code');
+            stateMatch = urlParams.get('state');
+            if (stateMatch === sessionStorage.getItem('state')) {
+                window.history.pushState("", "", accessInfo.redirect_uri) // remove params from url
+                sessionStorage.clear() // clear storage
+                return this.authorizationCode = authorizationCodeMatch;
+            } else {
+                alert('state mismatch');
+            }
+
         }
         //If the access token is not set AND the URL is not contain any access token, need to ask the user to login by directing to spotify login 
         else {
-            const authorizeEndpoint = `${authorizeAPI}${new URLSearchParams(accessInfo)}`;
+            const params = {
+                client_id: 'bb4fd4f43c4f4708842f10c07c853722', // Your client id
+                state: generateRandomString(16), // state is not required but strongly recommend.It generates a random string to be sent together to spotify and spotify will included this string in its response so we can compare to avoid fake response. This provides protection against attacks such as cross-site request forgery
+                redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
+                response_type: 'code',
+                //Which scope info that we need to see in user Spotify data
+                scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
+            }
+            const authorizeEndpoint = `${authorizeAPI}${new URLSearchParams(params)}`;
+            const queryString = new URLSearchParams(params);
+            const stateKey = queryString.get('state');
+            sessionStorage.setItem('state', stateKey); //save the state we first sent to Spotify into sessionStorage to later be compared with state returned from Spotify
             // @ts-ignore
             return window.location = authorizeEndpoint;
         }
@@ -143,11 +157,11 @@ const Spotify = {
     // 1. Get the current user's Spotify ID
     // 2. Create an empty playlist 
     // 3. Add items to that empty playlist
-    savePlaylistToSpotify(playlistName,playlistTracks) {
+    savePlaylistToSpotify(playlistName, playlistTracks) {
         this.handleLoginSpotify();
         // this.getCurrentUserProfile();
         // return this.createEmptyPlaylist(playlistName);
-        this.addItemsToPlaylist(playlistName,playlistTracks);
+        this.addItemsToPlaylist(playlistName, playlistTracks);
     },
     async getCurrentUserProfile() {
         const apiEndpoint = 'https://api.spotify.com/v1/me';
@@ -187,7 +201,7 @@ const Spotify = {
     //Add tracks from App component. Current playlist (state.playlistTracks) to the current user Spotify Account's playlist 
     //Using playlistID of the empty playlist create with createEmptyPlaylist()
     //Make request to Spotify API with body of the track URIs
-    async addItemsToPlaylist(playlistName,playlistTrackURIs) {
+    async addItemsToPlaylist(playlistName, playlistTrackURIs) {
         const playlistID = await this.createEmptyPlaylist(playlistName);
         const apiEndpoint = `https://api.spotify.com/v1/playlists/${playlistID}/tracks`;
         const options = {
@@ -197,11 +211,11 @@ const Spotify = {
             },
             method: 'POST',
             body: JSON.stringify({
-               uris: playlistTrackURIs
+                uris: playlistTrackURIs
             })
         };
 
-        const playlistCreated =  await this.fetchAPI(apiEndpoint,options);
+        const playlistCreated = await this.fetchAPI(apiEndpoint, options);
         return playlistCreated;
     },
 
