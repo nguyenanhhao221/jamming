@@ -96,6 +96,11 @@ export class App extends React.Component {
         });
         this.setState({ searchResults: newSearchResult })
     }
+
+    handleLogin() {
+        Spotify.handleLogin()
+    }
+
     render() {
         return (
             <div>
@@ -105,7 +110,8 @@ export class App extends React.Component {
 
                     <SearchBar
                         //Pass attribute onSearch with the search method
-                        onSearch={this.search} />
+                        onSearch={this.search}
+                        onLogin={this.handleLogin} />
 
                     <div className="App-playlist">
                         {/* <!-- Add a SearchResults component --> */}

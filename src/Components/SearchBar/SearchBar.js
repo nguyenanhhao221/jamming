@@ -39,6 +39,9 @@ export class SearchBar extends React.Component {
                     className="SearchButton"
                     onClick={this.search}
                 >SEARCH</button>
+                <button 
+                    className="SearchButton"
+                    onClick={this.props.onLogin}>Login</button>
             </div>
         )
     };
