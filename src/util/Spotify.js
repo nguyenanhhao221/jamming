@@ -12,6 +12,7 @@ const generateRandomString = function (length) {
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 const accessInfo = {
     redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
+    client_id: 'bb4fd4f43c4f4708842f10c07c853722'
 };
 const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
 
