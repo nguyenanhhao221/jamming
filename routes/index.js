@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
     const requestQuery = await req.query;
     requestQuery.client_id = client_id; // Add the client_id which saved in env to the params
 
+    // @ts-ignore
     const newParams = new URLSearchParams(requestQuery);
     const endpoint = `${authorizeAPI}${new URLSearchParams(newParams)}`;
 
@@ -47,6 +48,7 @@ router.get('/callback', (req, res) => {
         redirect_uri: redirect_uri,
         grant_type: 'authorization_code'
     };
+    // @ts-ignore
     let params = new URLSearchParams(body);
     let authOptions = {
         headers: {
