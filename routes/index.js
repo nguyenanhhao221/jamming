@@ -24,6 +24,7 @@ const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 
 
 router.use(express.json())
+router.use(cors());
 router.get('/', (req, res) => {
     const requestQuery = req.query;
     requestQuery.client_id = client_id;
