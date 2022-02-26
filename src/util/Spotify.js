@@ -21,6 +21,7 @@ const Spotify = {
     accessToken: '', //required for making request to retrieve data from Spotify
     refreshToken: '', //required when the authorization code expires
     //Get the authorization code when we start to login in
+    isLoggedIn: false,
     getAuthorizationCode() {
         //Check if the access_token is already have value. If yes, keep the value of it
         if (this.authorizationCode || this.accessToken) {
@@ -233,18 +234,19 @@ const Spotify = {
         }
         const params = {
             state: generateRandomString(16), // state is not required but strongly recommend.It generates a random string to be sent together to spotify and spotify will included this string in its response so we can compare to avoid fake response. This provides protection against attacks such as cross-site request forgery
-            redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
+            redirect_uri: 'http://localhost:8000/api/callback', // Your redirect uri
             response_type: 'code',
             //Which scope info that we need to see in user Spotify data
             scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
         }
-        const endpoint = `${url}${new URLSearchParams(params)}`
+        const endpoint = `${url}${new URLSearchParams(params)}`;
+        // this.fetchAPI(endpoint,options)
         let response = await fetch(endpoint, options);
         if (response.ok) {
             const jsonResponse = await response.json();
             console.log(jsonResponse);
-            return jsonResponse
-            // window.location.href = jsonResponse.authorizeEndpoint;
+            window.location.href = jsonResponse.result;
+            return this.isLoggedIn = true;
         }
     }
 };
