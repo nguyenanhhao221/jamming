@@ -4,28 +4,23 @@ const cors = require('cors');
 const axios = require('axios').default; // axios.<method> will now provide autocomplete and parameter typings
 require('dotenv').config();
 const cookieParser = require('cookie-parser'); // use cookie to store the state key
-const request = require('request');
-const url = require('url');
+
+
 //Store important info
 const client_secret = process.env.CLIENT_SECRET;
 const client_id = process.env.CLIENT_ID;
-const redirect_uri = 'http://localhost:8000/api/callback'
-
-const generateRandomString = function (length) {
-    let text = '';
-    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-};
-//Authorize to login with Spotify and allow our app with user's permission.
+const redirect_uri = 'http://localhost:8000/api/callback';
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
+let authorizeCode, accessToken, refreshToken;
 
+//Authorize to login with Spotify and allow our app with user's permission.
 router.use(express.json())
 router.use(cors());
+
 router.get('/', async (req, res) => {
+    if (authorizeCode) {
+        return;
+    }
     const requestQuery = await req.query;
     requestQuery.client_id = client_id; // Add the client_id which saved in env to the params
 
@@ -40,7 +35,10 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/callback', (req, res) => {
-    let authorizeCode = req.query.code || null;
+    if (accessToken) {
+        return;
+    }
+    authorizeCode = req.query.code || null;
     let stateSentBack = req.query.state || null;
     const url = 'https://accounts.spotify.com/api/token';
 
@@ -56,17 +54,46 @@ router.get('/callback', (req, res) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
     };
-   
 
-    console.log(authorizeCode);
-    axios.post(url, params.toString(),authOptions).then(response => {
-        if(response.status === 200) {
-            console.log(response);
-        }
-    })
-    
+    axios.post(url, params.toString(), authOptions)
+        .then(response => {
+            if (response.status === 200) {
+                accessToken = response.data.access_token;
+                refreshToken = response.data.refresh_token;
+                console.log(accessToken);
+                return;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
     res.redirect('http://localhost:3000/callback');
 })
 
+router.get('/refresh_token', (req, res) => {
+    let body = {
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token'
+    };
+    let params = new URLSearchParams(body);
+    let authOptions = {
+        headers: {
+            'Authorization': 'Basic ' + btoa(client_id + ":" + client_secret),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+    };
+    const url = 'https://accounts.spotify.com/api/token';
+
+    axios.post(url, params.toString(), authOptions)
+        .then(response => {
+            if (response.status === 200) {
+                accessToken = response.data.access_token;
+                return;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
+})
 
 module.exports = router;
