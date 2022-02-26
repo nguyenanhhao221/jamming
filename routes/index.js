@@ -24,19 +24,19 @@ router.get('/', async (req, res) => {
     const requestQuery = await req.query;
     requestQuery.client_id = client_id; // Add the client_id which saved in env to the params
 
+    // @ts-ignore
     const newParams = new URLSearchParams(requestQuery);
     const endpoint = `${authorizeAPI}${new URLSearchParams(newParams)}`;
 
     let stateSent = requestQuery.state;
     var stateKey = 'spotify_auth_state';
     res.cookie(stateKey, stateSent);
-
     res.json({ result: endpoint });
 })
 
 router.get('/callback', (req, res) => {
     if (accessToken) {
-        return;
+        return accessToken;
     }
     authorizeCode = req.query.code || null;
     let stateSentBack = req.query.state || null;
@@ -47,6 +47,7 @@ router.get('/callback', (req, res) => {
         redirect_uri: redirect_uri,
         grant_type: 'authorization_code'
     };
+    // @ts-ignore
     let params = new URLSearchParams(body);
     let authOptions = {
         headers: {
@@ -67,7 +68,7 @@ router.get('/callback', (req, res) => {
         .catch(error => {
             console.log(error);
         })
-    res.redirect('http://localhost:3000/callback');
+    res.redirect('http://localhost:3000')
 })
 
 router.get('/refresh_token', (req, res) => {
@@ -96,4 +97,10 @@ router.get('/refresh_token', (req, res) => {
         })
 })
 
+router.get('/token', (req, res) => {
+    res.json({
+        access_token : accessToken,
+        refresh_token: refreshToken
+    })
+})
 module.exports = router;

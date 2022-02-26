@@ -13,12 +13,17 @@ export class SearchBar extends React.Component {
 
         this.handleTermChange = this.handleTermChange.bind(this);
         this.search = this.search.bind(this);
+        this.searchWithBackEnd = this.searchWithBackEnd.bind(this);
     }
     //search method 
     //call the search method of App component and pass in the value of this SearchBar's state.term
     //The value of this SearchBar's state.term will be handle by handleTermChange method below
     search() {
         this.props.onSearch(this.state.term)
+    }
+
+    searchWithBackEnd() {
+        this.props.onLogin(this.state.term)
     }
 
     //handleTermChange method
@@ -41,7 +46,7 @@ export class SearchBar extends React.Component {
                 >SEARCH</button>
                 <button 
                     className="SearchButton"
-                    onClick={this.props.onLogin}>Login</button>
+                    onClick={this.searchWithBackEnd}>SEARCH WITH BACKEND</button>
             </div>
         )
     };
