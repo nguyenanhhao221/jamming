@@ -11,7 +11,7 @@ const generateRandomString = function (length) {
 
 const authorizeAPI = 'https://accounts.spotify.com/authorize?';
 const accessInfo = {
-    redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
+    redirect_uri: 'http://jamming-hao.surge.sh', // Your redirect uri
     client_id: 'bb4fd4f43c4f4708842f10c07c853722'
 };
 const client_secret = '51ef560eef1f4389ba4d3f8609cc0a0d';
@@ -51,7 +51,7 @@ const Spotify = {
             const params = {
                 client_id: 'bb4fd4f43c4f4708842f10c07c853722', // Your client id
                 state: generateRandomString(16), // state is not required but strongly recommend.It generates a random string to be sent together to spotify and spotify will included this string in its response so we can compare to avoid fake response. This provides protection against attacks such as cross-site request forgery
-                redirect_uri: 'http://localhost:3000/callback', // Your redirect uri
+                redirect_uri: 'http://jamming-hao.surge.sh', // Your redirect uri
                 response_type: 'code',
                 //Which scope info that we need to see in user Spotify data
                 scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
@@ -225,29 +225,6 @@ const Spotify = {
     search(term) {
         this.handleLoginSpotify();
         return this.getTracks(term);
-    },
-
-    async handleLogin() {
-        const url = 'http://localhost:8000/api?';
-        const options = {
-            method: 'GET',
-        }
-        const params = {
-            state: generateRandomString(16), // state is not required but strongly recommend.It generates a random string to be sent together to spotify and spotify will included this string in its response so we can compare to avoid fake response. This provides protection against attacks such as cross-site request forgery
-            redirect_uri: 'http://localhost:8000/api/callback', // Your redirect uri
-            response_type: 'code',
-            //Which scope info that we need to see in user Spotify data
-            scope: 'playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public user-read-private user-read-email'
-        }
-        const endpoint = `${url}${new URLSearchParams(params)}`;
-        // this.fetchAPI(endpoint,options)
-        let response = await fetch(endpoint, options);
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log(jsonResponse);
-            window.location.href = jsonResponse.result;
-            return this.isLoggedIn = true;
-        }
     }
 };
 
