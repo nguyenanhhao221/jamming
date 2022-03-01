@@ -4,7 +4,6 @@ import { SearchBar } from '../SearchBar/SearchBar';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
 import Spotify from '../../util/Spotify';
-import SpotifyBackend from '../../util/Spotify-with-backend';
 
 
 export class App extends React.Component {
@@ -24,7 +23,6 @@ export class App extends React.Component {
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
         this.search = this.search.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
     }
     // addTrack method
     // adds a song to the playlist state. The application passes the method through a series of components to Track. The user can trigger the .addTrack() method by clicking the + sign from the search results list.
@@ -99,25 +97,6 @@ export class App extends React.Component {
         this.setState({ searchResults: newSearchResult })
     }
 
-    async handleLogin(searchTerm) {
-        let tracks = await SpotifyBackend.searchUsingBackend(searchTerm);
-        if (tracks) {
-            let newSearchResult = [];
-            //Go through each track in the returned object from API and save to newSearchResult as new array
-            tracks.tracks.items.map(track => {
-                let newTrackObj = {};
-                newTrackObj.name = track.name;
-                newTrackObj.artist = track.artists[0].name;
-                newTrackObj.id = track.id;
-                newTrackObj.album = track.album.name;
-                newTrackObj.uri = track.uri;
-                newSearchResult.push(newTrackObj);
-                return newSearchResult;
-            });
-            this.setState({ searchResults: newSearchResult })
-        }
-    }
-
     render() {
         return (
             <div>
@@ -127,9 +106,7 @@ export class App extends React.Component {
 
                     <SearchBar
                         //Pass attribute onSearch with the search method
-                        onSearch={this.search}
-                        onLogin={this.handleLogin} />
-
+                        onSearch={this.search} />
                     <div className="App-playlist">
                         {/* <!-- Add a SearchResults component --> */}
                         {/* Pass the searchResults state of App into SearchResults component with prop name "searchResults" */}

@@ -1,5 +1,4 @@
 import React from "react";
-import Spotify from "../../util/Spotify";
 import './SearchBar.css';
 
 export class SearchBar extends React.Component {
@@ -44,9 +43,6 @@ export class SearchBar extends React.Component {
                     className="SearchButton"
                     onClick={this.search}
                 >SEARCH</button>
-                <button 
-                    className="SearchButton"
-                    onClick={this.searchWithBackEnd}>SEARCH WITH BACKEND</button>
             </div>
         )
     };
